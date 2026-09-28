@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: ChatBot
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chat-bot
+    username: postgres
+    password: ${db_pass}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  ai:
+    google:
+      genai:
+        api-key: ${api_key}
+        chat:
+          model:  gemini-3.6-flash
+
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always
+
+logging:
+  level:
+    org:
+      springframework:
+        ai:
+          chat:
+            client:
+              advisor:  DEBUG
