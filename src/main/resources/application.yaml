@@ -3,8 +3,8 @@ spring:
     name: ChatBot
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/chat-bot
-    username: postgres
+    url: ${DB_URL}
+    username: neondb_owner
     password: ${db_pass}
 
   jpa:
