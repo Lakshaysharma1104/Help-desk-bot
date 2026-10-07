@@ -1,0 +1,51 @@
+.header {
+  display: none;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: var(--header-height);
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+}
+
+.menuButton {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.22rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.menuButton span {
+  display: block;
+  width: 1rem;
+  height: 2px;
+  margin: 0 auto;
+  background: var(--color-text);
+  border-radius: 999px;
+}
+
+.copy h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.copy p {
+  margin: 0.125rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 960px) {
+  .header {
+    display: flex;
+  }
+}

@@ -1,0 +1,20 @@
+.thread {
+  flex: 1;
+  overflow: auto;
+  padding: 1.25rem 1.25rem 0.5rem;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: min(100%, 52rem);
+  margin: 0 auto;
+  padding-bottom: 1rem;
+}
+
+@media (max-width: 960px) {
+  .thread {
+    padding-inline: 1rem;
+  }
+}

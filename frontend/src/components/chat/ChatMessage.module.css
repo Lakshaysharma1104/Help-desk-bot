@@ -1,0 +1,94 @@
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-width: min(100%, 46rem);
+  animation: fadeInUp var(--transition-base);
+}
+
+.user {
+  align-self: flex-end;
+}
+
+.assistant {
+  align-self: flex-start;
+}
+
+.meta {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+.user .meta {
+  justify-content: flex-end;
+}
+
+.author {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.bubble {
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.user .bubble {
+  background: var(--color-primary);
+  border-color: transparent;
+  color: var(--color-primary-text);
+}
+
+.user .author,
+.user time {
+  color: var(--color-text-tertiary);
+}
+
+.content {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1rem;
+  margin-left: 0.125rem;
+  vertical-align: text-bottom;
+  background: var(--color-primary);
+  animation: blink 1s step-end infinite;
+}
+
+.errorBlock {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.user .errorBlock {
+  border-top-color: rgba(255, 255, 255, 0.25);
+}
+
+.errorBlock p {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-danger);
+}
+
+.errorActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
