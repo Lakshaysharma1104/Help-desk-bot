@@ -33,7 +33,7 @@ function decodeChunk(chunk: string): string {
 
 function extractSsePayloads(buffer: string): { payloads: string[]; remainder: string } {
   const payloads: string[] = [];
-  const events = buffer.split('\n\n');
+  const events = buffer.replace(/\r\n/g, '\n').split('\n\n');
   const remainder = events.pop() ?? '';
 
   for (const event of events) {
@@ -59,6 +59,10 @@ function extractSsePayloads(buffer: string): { payloads: string[]; remainder: st
   return { payloads, remainder };
 }
 
+function hasSseFrame(buffer: string): boolean {
+  return /(?:^|\r?\n)(?:data|event|id|retry):/.test(buffer) || /^(?:\r?\n)*:/.test(buffer);
+}
+
 async function consumeStream(
   response: Response,
   onChunk: (chunk: string) => void,
@@ -68,11 +72,10 @@ async function consumeStream(
   if (!reader) {
     throw new HelpdeskApiError({ message: 'The server returned an empty response stream.' });
   }
-
   const decoder = new TextDecoder();
   let buffer = '';
-  const contentType = response.headers.get('content-type') ?? '';
-  const isEventStream = contentType.includes('text/event-stream');
+  let formatProbe = '';
+  let streamFormat: 'sse' | 'plain' | null = null;
 
   while (true) {
     if (signal?.aborted) {
@@ -90,19 +93,47 @@ async function consumeStream(
       continue;
     }
 
-    if (isEventStream || chunkText.includes('data:')) {
+    if (streamFormat === 'sse') {
       buffer += chunkText;
       const { payloads, remainder } = extractSsePayloads(buffer);
       buffer = remainder;
       payloads.forEach(onChunk);
-    } else {
+    } else if (streamFormat === 'plain') {
       onChunk(decodeChunk(chunkText));
+    } else {
+      formatProbe += chunkText;
+      if (hasSseFrame(formatProbe)) {
+        streamFormat = 'sse';
+        buffer = formatProbe;
+        formatProbe = '';
+        const { payloads, remainder } = extractSsePayloads(buffer);
+        buffer = remainder;
+        payloads.forEach(onChunk);
+      } else if (formatProbe.length >= 5 || /\r?\n/.test(formatProbe)) {
+        streamFormat = 'plain';
+        onChunk(decodeChunk(formatProbe));
+        formatProbe = '';
+      }
     }
   }
 
-  if (buffer.trim()) {
-    const { payloads } = extractSsePayloads(`${buffer}\n\n`);
-    payloads.forEach(onChunk);
+  const finalChunk = decoder.decode();
+  if (streamFormat === 'sse') {
+    buffer += finalChunk;
+    if (buffer.trim()) {
+      const { payloads } = extractSsePayloads(`${buffer}\n\n`);
+      payloads.forEach(onChunk);
+    }
+  } else {
+    const remaining = `${formatProbe}${finalChunk}`;
+    if (remaining) {
+      if (hasSseFrame(remaining)) {
+        const { payloads } = extractSsePayloads(`${remaining}\n\n`);
+        payloads.forEach(onChunk);
+      } else {
+        onChunk(decodeChunk(remaining));
+      }
+    }
   }
 }
 
