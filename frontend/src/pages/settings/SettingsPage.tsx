@@ -88,12 +88,12 @@ export function SettingsPage() {
         <section className={styles.section}>
           <label htmlFor="api-base">API base URL</label>
           <p className={styles.help}>
-            Leave blank to use the local dev proxy (`/api` → `localhost:8080`).
+            This is the backend used by the assistant. You can override it for local development.
           </p>
           <input
             id="api-base"
             type="url"
-            placeholder="http://localhost:8080"
+            placeholder="https://help-desk-bot.onrender.com"
             value={settings.apiBaseUrl}
             onChange={(event) => dispatch(setApiBaseUrl(event.target.value))}
           />

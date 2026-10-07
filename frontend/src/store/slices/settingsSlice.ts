@@ -3,11 +3,12 @@ import type { AppSettings } from '@/types';
 import { readJson, writeJson } from '@/utils/storage';
 
 const SETTINGS_KEY = 'helpdesk_settings';
+const DEFAULT_API_BASE_URL = 'https://help-desk-bot.onrender.com';
 
 const defaultSettings: AppSettings = {
   theme: 'system',
   userEmail: '',
-  apiBaseUrl: '',
+  apiBaseUrl: DEFAULT_API_BASE_URL,
 };
 
 function loadSettings(): AppSettings {
